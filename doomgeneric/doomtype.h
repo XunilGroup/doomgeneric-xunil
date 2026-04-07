@@ -62,23 +62,18 @@
 
 #include <inttypes.h>
 
-#if defined(__cplusplus) || defined(__bool_true_false_are_defined)
+// Historically, Doom's code treats `boolean` values as `int` in multiple places
+// (eg casts to `int *` in the status bar widget setup). If `boolean` is a
+// 1-byte type, those casts become out-of-bounds reads and can deterministically
+// corrupt indices/pointers. Keep this a 32-bit type for ABI stability.
+typedef int boolean;
 
-// Use builtin bool type with C++.
-
-typedef unsigned char boolean;
-
-#else
-
-#ifndef __bool_true_false_are_defined 
-typedef enum 
-{
-    false	= 0,
-    true	= 1,
-	undef	= 0xFFFFFFFF
-} boolean;
+#ifndef true
+#define true 1
 #endif
 
+#ifndef false
+#define false 0
 #endif
 
 typedef uint8_t byte;
