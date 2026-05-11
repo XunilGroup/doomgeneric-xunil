@@ -1,7 +1,6 @@
 #include "doomkeys.h"
 #include "../../../libxunil/include/keyboard.h"
 #include <complex.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
 #include <string.h>
@@ -19,6 +18,8 @@ struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
 };
+
+void rust_eh_personality(void) {}
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
 int draw_buffer(uint32_t *buffer, uint32_t width, uint32_t height);
@@ -143,6 +144,11 @@ int DG_GetKey(int* pressed, unsigned char* doomKey)
 void DG_SetWindowTitle(const char * title)
 {
 
+}
+
+void DG_Exit() {
+    DG_ScreenBuffer = malloc(DOOMGENERIC_RESX * DOOMGENERIC_RESY * 4);
+    draw_buffer(DG_ScreenBuffer, DOOMGENERIC_RESX, DOOMGENERIC_RESY);
 }
 
 int main(int argc, char **argv)

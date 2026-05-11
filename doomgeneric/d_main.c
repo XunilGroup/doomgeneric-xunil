@@ -29,6 +29,7 @@
 #include "deh_main.h"
 #include "deh_str.h"
 #include "doomdef.h"
+#include "doomgeneric.h"
 #include "doomstat.h"
 
 #include "dstrings.h"
@@ -1169,6 +1170,7 @@ void D_DoomMain (void)
 #endif
 
     I_AtExit(D_Endoom, false);
+    I_AtExit(DG_Exit, true);
 
     // print banner
 
