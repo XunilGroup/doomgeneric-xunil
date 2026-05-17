@@ -29,33 +29,33 @@ static unsigned char convertToDoomKey(unsigned int key, uint32_t unicode)
 {
 	switch (key)
 	{
-        case RETURN:
-    		key = KEY_ENTER;
-    		break;
-        case ESCAPE:
+	    case KEY_ENTER:
+			key = 13;
+			break;
+        case KEY_ESC:
     		key = KEY_ESCAPE;
     		break;
-        case ARROW_LEFT:
+        case KEY_LEFT:
     		key = KEY_LEFTARROW;
     		break;
-        case ARROW_RIGHT:
+        case KEY_RIGHT:
     		key = KEY_RIGHTARROW;
     		break;
-        case ARROW_UP:
+        case KEY_UP:
     		key = KEY_UPARROW;
     		break;
-        case ARROW_DOWN:
+        case KEY_DOWN:
     		key = KEY_DOWNARROW;
     		break;
-        case L_CONTROL:
-        case R_CONTROL:
+        case KEY_LEFTCTRL:
+        case KEY_RIGHTCTRL:
     		key = KEY_FIRE;
     		break;
-        case SPACEBAR:
+        case KEY_SPACE:
     		key = KEY_USE;
     		break;
-        case L_SHIFT:
-        case R_SHIFT:
+        case KEY_LEFTSHIFT:
+        case KEY_RIGHTSHIFT:
     		key = KEY_RSHIFT;
     		break;
     	default:
