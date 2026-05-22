@@ -416,10 +416,6 @@ void R_DrawPlanes (void)
 	// regular flat
         lumpnum = firstflat + flattranslation[pl->picnum];
 	ds_source = W_CacheLumpNum(lumpnum, PU_STATIC);
-
-	// int len = W_LumpLength(lumpnum);
-	// printf("flat lump=%d len=%d ptr=%p picnum=%d\n", lumpnum, len, ds_source, pl->picnum);
-
 	planeheight = abs(pl->height-viewz);
 	light = (pl->lightlevel >> LIGHTSEGSHIFT)+extralight;
 
