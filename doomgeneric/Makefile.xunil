@@ -12,14 +12,23 @@ else
 endif
 
 
-CC=ccache gcc
+ifeq ($(KARCH),aarch64)
+    CC := ccache aarch64-linux-gnu-gcc
+    ARCH_FLAGS := -march=armv8-a+nosimd -mabi=lp64
+else ifeq ($(KARCH),x86_64)
+    CC := ccache x86_64-linux-gnu-gcc
+    ARCH_FLAGS := -m64 -mno-mmx -mno-avx
+else
+    $(error Error: Unsupported KARCH: $(KARCH))
+endif
+
 GCC_INCLUDES := $(shell gcc -print-file-name=include)
 SYS_INCLUDES := /usr/include
 
-CFLAGS += -w -D__NO_INLINE__ -mno-mmx -mno-avx -fno-stack-protector -fno-inline -fno-inline-small-functions -fno-indirect-inlining -fno-builtin -fcompare-debug-second -nostdlib -nostdinc -I../../../libxunil/include -I$(GCC_INCLUDES) -I$(SYS_INCLUDES) -ggdb3 -Os
+CFLAGS += $(ARCH_FLAGS) -w -D__NO_INLINE__ -fno-stack-protector -fno-inline -fno-inline-small-functions -fno-indirect-inlining -fno-builtin -fcompare-debug-second -nostdlib -nostdinc -I../../../libxunil/include -I$(GCC_INCLUDES) -I$(SYS_INCLUDES) -ggdb3 -Os
 CFLAGS += -fuse-ld=mold -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE
 
-LDFLAGS += -static -Wl,--gc-sections -L../../../libxunil/target/release -l:libxunil.a
+LDFLAGS += -static -Wl,--gc-sections -L../../../libxunil/target/$(KARCH)-unknown-none/release -l:libxunil.a
 
 # subdirectory for objects
 OBJDIR=build

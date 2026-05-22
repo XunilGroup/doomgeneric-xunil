@@ -589,11 +589,13 @@ int			dscount;
 // Draws the actual span.
 void R_DrawSpan (void) 
 { 
-    unsigned int position, step;
+    uint32_t xfrac;
+    uint32_t yfrac;
+    uint32_t xstep;
+    uint32_t ystep;
     byte *dest;
     int count;
     int spot;
-    unsigned int xtemp, ytemp;
 
 #ifdef RANGECHECK
     if (ds_x2 < ds_x1
@@ -612,10 +614,10 @@ void R_DrawSpan (void)
     // each 16-bit part, the top 6 bits are the integer part and the
     // bottom 10 bits are the fractional part of the pixel position.
 
-    position = ((ds_xfrac << 10) & 0xffff0000)
-             | ((ds_yfrac >> 6)  & 0x0000ffff);
-    step = ((ds_xstep << 10) & 0xffff0000)
-         | ((ds_ystep >> 6)  & 0x0000ffff);
+    xfrac = (uint32_t) ds_xfrac;
+    yfrac = (uint32_t) ds_yfrac;
+    xstep = (uint32_t) ds_xstep;
+    ystep = (uint32_t) ds_ystep;
 
     dest = ylookup[ds_y] + columnofs[ds_x1];
 
@@ -625,15 +627,14 @@ void R_DrawSpan (void)
     do
     {
 	// Calculate current texture index in u,v.
-        ytemp = (position >> 4) & 0x0fc0;
-        xtemp = (position >> 26);
-        spot = xtemp | ytemp;
+        spot = ((xfrac >> 16) & 63) | ((yfrac >> 10) & 0x0fc0);
 
 	// Lookup pixel from flat texture tile,
 	//  re-index using light/colormap.
 	*dest++ = ds_colormap[ds_source[spot]];
 
-        position += step;
+        xfrac += xstep;
+        yfrac += ystep;
 
     } while (count--);
 }
@@ -671,7 +672,7 @@ void R_DrawSpan (void)
 	ytemp = position>>4;
 	ytemp = ytemp & 4032;
 	xtemp = position>>26;
-	spot = xtemp | ytemp;
+	spot = (xtemp | ytemp) & 0x0fff;
 	position += step;
 	dest[0] = colormap[source[spot]]; 
 
@@ -718,8 +719,10 @@ void R_DrawSpan (void)
 //
 void R_DrawSpanLow (void)
 {
-    unsigned int position, step;
-    unsigned int xtemp, ytemp;
+    uint32_t xfrac;
+    uint32_t yfrac;
+    uint32_t xstep;
+    uint32_t ystep;
     byte *dest;
     int count;
     int spot;
@@ -736,10 +739,10 @@ void R_DrawSpanLow (void)
 //	dscount++; 
 #endif
 
-    position = ((ds_xfrac << 10) & 0xffff0000)
-             | ((ds_yfrac >> 6)  & 0x0000ffff);
-    step = ((ds_xstep << 10) & 0xffff0000)
-         | ((ds_ystep >> 6)  & 0x0000ffff);
+    xfrac = (uint32_t) ds_xfrac;
+    yfrac = (uint32_t) ds_yfrac;
+    xstep = (uint32_t) ds_xstep;
+    ystep = (uint32_t) ds_ystep;
 
     count = (ds_x2 - ds_x1);
 
@@ -752,16 +755,15 @@ void R_DrawSpanLow (void)
     do
     {
 	// Calculate current texture index in u,v.
-        ytemp = (position >> 4) & 0x0fc0;
-        xtemp = (position >> 26);
-        spot = xtemp | ytemp;
+        spot = ((xfrac >> 16) & 63) | ((yfrac >> 10) & 0x0fc0);
 
 	// Lowres/blocky mode does it twice,
 	//  while scale is adjusted appropriately.
 	*dest++ = ds_colormap[ds_source[spot]];
 	*dest++ = ds_colormap[ds_source[spot]];
 
-	position += step;
+	xfrac += xstep;
+	yfrac += ystep;
 
     } while (count--);
 }
