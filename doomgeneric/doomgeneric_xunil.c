@@ -1,4 +1,5 @@
 #include "doomkeys.h"
+#include "../../../libxunil/include/window.h"
 #include "../../../libxunil/include/keyboard.h"
 #include <complex.h>
 #include <stdint.h>
@@ -14,6 +15,8 @@ static xunil_kbd_event_t s_kbdevent_queue[8];
 static unsigned int s_KeyQueueWriteIndex = 0;
 static unsigned int s_KeyQueueReadIndex = 0;
 
+struct Window window;
+
 struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
@@ -22,7 +25,6 @@ struct timezone {
 void rust_eh_personality(void) {}
 
 int gettimeofday(struct timeval *tv, struct timezone *tz);
-int draw_buffer(uint32_t *buffer, uint32_t width, uint32_t height);
 useconds_t sleep_ms(uint32_t ms);
 
 static unsigned char convertToDoomKey(unsigned int key, uint32_t unicode)
@@ -101,7 +103,9 @@ void fill_kbd_buffer() {
 
 void DG_DrawFrame()
 {
-    draw_buffer(DG_ScreenBuffer, DOOMGENERIC_RESX, DOOMGENERIC_RESY);
+    draw_buffer_to_window(DG_ScreenBuffer, window.shm_id,
+                          DOOMGENERIC_RESX, DOOMGENERIC_RESY,
+                          window.width, window.height);
     fill_kbd_buffer();
 }
 
@@ -148,11 +152,16 @@ void DG_SetWindowTitle(const char * title)
 
 void DG_Exit() {
     DG_ScreenBuffer = malloc(DOOMGENERIC_RESX * DOOMGENERIC_RESY * 4);
-    draw_buffer(DG_ScreenBuffer, DOOMGENERIC_RESX, DOOMGENERIC_RESY);
+    draw_buffer_to_window(DG_ScreenBuffer, window.shm_id,
+                          DOOMGENERIC_RESX, DOOMGENERIC_RESY,
+                          window.width, window.height);
 }
+
 
 int main(int argc, char **argv)
 {
+    window = request_window();
+
     doomgeneric_Create(argc, argv);
 
     while(1)
