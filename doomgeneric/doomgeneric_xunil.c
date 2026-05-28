@@ -84,7 +84,7 @@ void DG_Init()
     memset(s_KeyQueue, 0, KEYQUEUE_SIZE * sizeof(unsigned short));
 }
 
-void fill_kbd_buffer() {
+void fill_input_buffer() {
     int to_read;
 
     to_read = kbd_read(s_kbdevent_queue, 8);
@@ -106,7 +106,7 @@ void DG_DrawFrame()
     draw_buffer_to_window(DG_ScreenBuffer, window.shm_id,
                           DOOMGENERIC_RESX, DOOMGENERIC_RESY,
                           window.width, window.height);
-    fill_kbd_buffer();
+    fill_input_buffer();
 }
 
 void DG_SleepMs(uint32_t ms)
@@ -160,7 +160,7 @@ void DG_Exit() {
 
 int main(int argc, char **argv)
 {
-    window = request_window();
+    window = request_window(DOOMGENERIC_RESX, DOOMGENERIC_RESY);
 
     doomgeneric_Create(argc, argv);
 
