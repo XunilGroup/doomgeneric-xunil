@@ -160,7 +160,7 @@ void DG_Exit() {
 
 int main(int argc, char **argv)
 {
-    window = request_window(DOOMGENERIC_RESX, DOOMGENERIC_RESY);
+    window = request_window(DOOMGENERIC_RESX, DOOMGENERIC_RESY, "doomgeneric");
 
     doomgeneric_Create(argc, argv);
 
