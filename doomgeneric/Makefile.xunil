@@ -15,9 +15,13 @@ endif
 ifeq ($(KARCH),aarch64)
     RAW_CC := aarch64-linux-gnu-gcc
     ARCH_FLAGS := -march=armv8-a -mabi=lp64
+    SYS_INCLUDES := /usr/include /usr/aarch64-linux-gnu/include
+    MOLD_FLAGS := -fuse-ld=mold -B$(shell dirname $(shell which mold))
 else ifeq ($(KARCH),x86_64)
     RAW_CC := gcc
     ARCH_FLAGS := -m64 -mno-mmx -mno-avx
+    SYS_INCLUDES := /usr/include /usr/include/x86_64-linux-gnu
+    MOLD_FLAGS := -fuse-ld=mold
 else
     $(error Error: Unsupported KARCH: $(KARCH))
 endif
@@ -25,14 +29,8 @@ endif
 CC := ccache $(RAW_CC)
 GCC_INCLUDES := $(shell $(RAW_CC) -print-file-name=include)
 
-ifeq ($(KARCH),aarch64)
-    SYS_INCLUDES := /usr/include /usr/aarch64-linux-gnu/include
-else ifeq ($(KARCH),x86_64)
-    SYS_INCLUDES := /usr/include /usr/include/x86_64-linux-gnu
-endif
-
 CFLAGS += $(ARCH_FLAGS) -w -D__NO_INLINE__ -fno-stack-protector -fno-inline -fno-inline-small-functions -fno-indirect-inlining -fno-builtin -fcompare-debug-second -nostdlib -nostdinc -I../../../libxunil/include -I$(GCC_INCLUDES) $(addprefix -I, $(SYS_INCLUDES)) -ggdb3 -O3
-CFLAGS += -fuse-ld=mold -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE
+CFLAGS += $(MOLD_FLAGS) -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE
 
 LDFLAGS += -static -Wl,--gc-sections -L../../../libxunil/target/$(KARCH)-unknown-none/release -l:libxunil.a
 
