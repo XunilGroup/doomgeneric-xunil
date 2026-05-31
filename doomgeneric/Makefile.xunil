@@ -13,16 +13,18 @@ endif
 
 
 ifeq ($(KARCH),aarch64)
-    CC := ccache aarch64-linux-gnu-gcc
+    RAW_CC := aarch64-linux-gnu-gcc
     ARCH_FLAGS := -march=armv8-a -mabi=lp64
 else ifeq ($(KARCH),x86_64)
-    CC := ccache x86_64-linux-gnu-gcc
+    RAW_CC := gcc
     ARCH_FLAGS := -m64 -mno-mmx -mno-avx
 else
     $(error Error: Unsupported KARCH: $(KARCH))
 endif
 
-GCC_INCLUDES := $(shell gcc -print-file-name=include)
+CC := ccache $(RAW_CC)
+GCC_INCLUDES := $(shell $(RAW_CC) -print-file-name=include)
+
 ifeq ($(KARCH),aarch64)
     SYS_INCLUDES := /usr/include /usr/aarch64-linux-gnu/include
 else ifeq ($(KARCH),x86_64)
