@@ -30,7 +30,7 @@ CC := ccache $(RAW_CC)
 GCC_INCLUDES := $(shell $(RAW_CC) -print-file-name=include)
 
 CFLAGS += $(ARCH_FLAGS) -w -D__NO_INLINE__ -fno-stack-protector -fno-inline -fno-inline-small-functions -fno-indirect-inlining -fno-builtin -fcompare-debug-second -nostdlib -nostdinc -I../../../libxunil/include -I$(GCC_INCLUDES) $(addprefix -I, $(SYS_INCLUDES)) -ggdb3 -O3
-CFLAGS += $(MOLD_FLAGS) -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE
+CFLAGS += -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE
 
 LDFLAGS += -static -Wl,--gc-sections -L../../../libxunil/target/$(KARCH)-unknown-none/release -l:libxunil.a
 
