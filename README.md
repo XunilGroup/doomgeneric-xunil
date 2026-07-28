@@ -65,3 +65,9 @@ emscripten port is based on SDL port, so it supports sound and music! For music,
 
 ## SDL
 ![SDL](screenshots/sdl.png)
+
+## Mirrors
+
+[![Forgejo](https://img.shields.io/badge/Forgejo-git.csd4ni3l.hu-1e90ff)](https://git.csd4ni3l.hu/XunilGroup/doomgeneric-xunil)
+[![GitHub](https://img.shields.io/badge/GitHub-github.com-181717)](https://github.com/XunilGroup/doomgeneric-xunil)
+[![Codeberg](https://img.shields.io/badge/Codeberg-codeberg.org-2185D0)](https://codeberg.org/XunilGroup/doomgeneric-xunil)
